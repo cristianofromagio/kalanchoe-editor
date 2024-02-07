@@ -12,8 +12,32 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
-    },
+			"clipboard": {
+				"readText": true,
+				"writeText": true
+			},
+			"fs": {
+				"all": true,
+				"scope": ["$APP/**", "$DESKTOP/**", "$RESOURCE/*"]
+			},
+			"path": {
+				"all": true
+			},
+			"protocol": {
+				"all": true,
+				"assetScope": ["$APP/**", "$DESKTOP/**", "$RESOURCE/*"]
+			},
+			"shell": {
+				"all": true,
+				"scope": [
+					{
+						"name": "bash",
+						"cmd": "bash",
+						"args": true
+					}
+				]
+			}
+		},
     "bundle": {
       "active": true,
       "category": "DeveloperTool",
@@ -29,7 +53,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "dev.cristianofromagio.kalanchoe",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -38,7 +62,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+			"resources": [
+				"resources/*"
+			],
       "shortDescription": "",
       "targets": "all",
       "windows": {
@@ -48,7 +74,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false
