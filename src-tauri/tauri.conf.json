@@ -16,6 +16,9 @@
 				"readText": true,
 				"writeText": true
 			},
+			"dialog": {
+        "open": true
+      },
 			"fs": {
 				"all": true,
 				"scope": ["$APP/**", "$DESKTOP/**", "$RESOURCE/*"]
