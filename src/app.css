@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.splitpanes__pane {
+	height: auto !important;
+	overflow: scroll;
+}
+.splitpanes.default-theme .splitpanes__pane {
+	background-color: transparent !important;
+}
+
+.cm-editor {
+	width: 100%;
+}
