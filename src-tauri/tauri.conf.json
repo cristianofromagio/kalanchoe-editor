@@ -17,11 +17,17 @@
 				"writeText": true
 			},
 			"dialog": {
-        "open": true
+        "all": true
       },
 			"fs": {
 				"all": true,
-				"scope": ["$APP/**", "$DESKTOP/**", "$RESOURCE/*"]
+				"scope": [
+					"$APP/**",
+					"$DESKTOP/**",
+					"$RESOURCE/*",
+					"C:\\Users\\Cristiano\\AppData\\Local\\Temp\\*",
+					"C:\\Users\\Cristiano\\Desktop\\data\\temp\\*"
+				]
 			},
 			"path": {
 				"all": true
@@ -33,12 +39,16 @@
 			"shell": {
 				"all": true,
 				"scope": [
-					{
-						"name": "bash",
-						"cmd": "bash",
-						"args": true
-					}
-				]
+          {
+            "name": "plantuml-java",
+            "cmd": "java",
+            "args": true
+          }
+        ],
+				"sidecar": false
+			},
+			"os": {
+				"all": true
 			}
 		},
     "bundle": {
@@ -48,7 +58,7 @@
       "deb": {
         "depends": []
       },
-      "externalBin": [],
+      "externalBin": [ ],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -77,7 +87,7 @@
       }
     },
     "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
+      "csp": "default-src 'self' style-src 'self' 'unsafe-inline'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false

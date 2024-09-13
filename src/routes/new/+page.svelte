@@ -2,12 +2,12 @@
 	import { convertFileSrc } from '@tauri-apps/api/tauri';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import { panzoom, type Options } from 'svelte-pan-zoom';
-	// import CodeMirror from 'svelte-codemirror-editor';
+	import CodeMirror from 'svelte-codemirror-editor';
 
-	import { generateDiagram } from '../../shared/storage.js';
+	import { copyDiagramToClipboard, generateDiagram, runJavaCommand } from '../../shared/storage.js';
 	import { writable, get } from 'svelte/store';
 	// import { onDestroy } from 'svelte';
-	import LoadingSpinner from '$lib/LoadingSpinner.svelte';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	import { onDestroy, onMount } from 'svelte';
 	import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -29,14 +29,16 @@
 	let errorData: PlantUMLError;
 
 	let imageSource = writable("plantuml-greetings.svg"); // from 'static' folder
+	let imagePathSource = writable('');
 	let doLoadImage = loadImageForCanvas(get(imageSource));
 	const unsubscribe = imageSource.subscribe((newImageSource) => {
 		doLoadImage = loadImageForCanvas(newImageSource);
+		console.log(newImageSource);
 	});
 
 	function loadImageForCanvas(imagePath: string) {
 		return new Promise<Options>((resolve, reject) => {
-			if (imagePath == "ERROR_OP") {
+			if (imagePath && imagePath === "ERROR_OP") {
 				reject();
 				return;
 			}
@@ -66,16 +68,18 @@
 		}
 
 		let { imagePath, error } = await generateDiagram(val);
-		if (error) {
+		if (error.message !== '') {
 			isImageLoaded = true;
 			errorData = error;
 			imageSource.update((old) => 'ERROR_OP');
+			return;
 		}
 
 		if (imagePath && imagePath !== '') {
 			isImageLoaded = true;
 			let newPath = convertFileSrc(imagePath)+"?t="+Date.now();
 			imageSource.update((old) => newPath);
+			imagePathSource.update((old) => imagePath);
 		}
 	};
 
@@ -181,6 +185,9 @@
 
 			Generate diagram
 		</button>
+		<!-- <button on:click={() => runJavaCommand(diagramContent)}>
+			Run Java Command
+		</button> -->
 	</Pane>
 	<Pane minSize={20} class="flex bg-blue-100">
 		{#if isImageLoaded}
@@ -188,6 +195,13 @@
 				<LoadingSpinner/>
 			{:then panzoomOptions}
 				<canvas use:panzoom={panzoomOptions} />
+					<button
+						disabled={get(imagePathSource) === ''}
+						on:click={() => copyDiagramToClipboard(get(imagePathSource))}
+						type="button"
+						class="absolute inline-flex items-center disabled:cursor-not-allowed disabled:bg-slate-500 bottom-7 right-8 rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+						Copy image file
+					</button>
 			{:catch error}
 
 				<!-- <div class="flex m-auto rounded border-l-4 border-red-400 bg-red-50 p-4">
@@ -228,6 +242,7 @@
 					</div>
 				</div>
 			{/await}
+
 		{:else}
 				<LoadingSpinner/>
 		{/if}

@@ -1,5 +1,5 @@
 <script>
-	import DiagramCard from "$lib/DiagramCard.svelte";
+	import DiagramCard from "$lib/components/DiagramCard.svelte";
 </script>
 
 <!-- DIAGRAMS LIST GOES HERE -->
